@@ -2,7 +2,7 @@
 
 Este proyecto consiste en una aplicación full-stack (Java + Angular) para la gestión de estudiantes y cursos.
 Incluye un backend en Java (Spring Boot) y un frontend en Angular.
-
+![Vista previa del proyecto](./images/preview.png)
 
 🚀 TECNOLOGÍAS UTILIZADAS
 
