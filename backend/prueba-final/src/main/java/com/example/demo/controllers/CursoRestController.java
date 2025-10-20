@@ -1,0 +1,213 @@
+package com.example.demo.controllers;
+
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.example.demo.models.entities.Curso;
+ import com.example.demo.models.services.ICursoService;
+
+
+
+@CrossOrigin(origins = ("http://localhost:4200"))
+@RestController
+@RequestMapping("/api")
+public class CursoRestController {
+
+	
+	 @Autowired
+	 private ICursoService cursoService;
+	
+	
+ 
+		///////////////////////////////////
+		/*   	  LISTAR CURSOS          */
+		///////////////////////////////////
+	    
+	    @GetMapping("/cursos")
+        public ResponseEntity<?> findAll(){
+		
+		Map<String, Object> response = new LinkedHashMap<>();
+		List<Curso> resultado = new ArrayList<>();
+		
+		try {
+			
+			resultado =  cursoService.findAllActive();
+			
+		}catch(DataAccessException e) {
+			
+			response.put("mensaje", "Error al realizar la búsqueda de todos los cursos en la BBDD");
+			response.put("error", e.getMessage().concat(":").concat(e.getMostSpecificCause().getMessage()));
+			return new ResponseEntity< Map<String, Object> >(response,HttpStatus.INTERNAL_SERVER_ERROR );//500
+			
+		}
+		
+		response.put("mensaje", "El listado de todos los cursos se ha efectuado con éxito");
+		response.put("datos", resultado);
+		return new ResponseEntity<  Map<String,  Object > >(response,HttpStatus.OK);//200
+	}
+
+    
+		///////////////////////////////////
+		/* 	  BUSCAR CURSOS POR ID       */
+		///////////////////////////////////
+		
+		@GetMapping("/curso/{id}")
+		public ResponseEntity<?> findById(@PathVariable Long id) {
+		
+		Map<String, Object> response = new LinkedHashMap<>();
+		Curso resultado = null;
+		
+		try {
+		
+		resultado =  cursoService.findById(id);
+		
+		}catch(DataAccessException e) {
+		
+		response.put("mensaje", "Error al realizar la búsqueda del curso con id: " + id + " en la BBDD");
+		response.put("error", e.getMessage().concat(":").concat(e.getMostSpecificCause().getMessage()));
+		return new ResponseEntity< Map<String, Object> >(response,HttpStatus.INTERNAL_SERVER_ERROR );//500
+		
+		}
+		
+		response.put("mensaje", "La búsqueda del curso con id: " + id + " se ha efectuado con éxito");
+		response.put("datos", resultado);
+		return new ResponseEntity<  Map<String,  Object > >(response,HttpStatus.OK);//200
+		
+		}
+	
+	
+		///////////////////////////////////
+		/*   	   CREAR CURSO           */
+		///////////////////////////////////
+		
+		@PostMapping("/curso")
+		public ResponseEntity<?> create(@RequestBody Curso curso) {
+		
+		Map<String, Object> response = new LinkedHashMap<>();
+		Curso resultado = null;
+		
+		try {
+		
+		resultado =  cursoService.save(curso);
+		
+		}catch(DataIntegrityViolationException e) {
+		
+		response.put("mensaje", "Error al intentar crear el curso en la BBDD porque probablemente ya exista");
+		response.put("error", e.getMessage().concat(":").concat(e.getMostSpecificCause().getMessage()));
+		return new ResponseEntity< Map<String, Object> >(response,HttpStatus.BAD_REQUEST );//400
+		
+		}catch(DataAccessException e) {
+		
+		response.put("mensaje", "Error al intentar crear el curso en la BBDD");
+		response.put("error", e.getMessage().concat(":").concat(e.getMostSpecificCause().getMessage()));
+		return new ResponseEntity< Map<String, Object> >(response,HttpStatus.INTERNAL_SERVER_ERROR );//500
+		
+		}
+		
+		response.put("mensaje", "Curso se ha creado con éxito");
+		response.put("datos", resultado);
+		return new ResponseEntity<  Map<String,  Object > >(response,HttpStatus.OK);//200
+		}
+		
+	
+		///////////////////////////////////
+		/*      ACTUALIZAR CURSO         */
+		///////////////////////////////////
+		
+		@PutMapping("/curso")
+		public ResponseEntity<?> update(@RequestBody Curso curso) {
+			
+			Map<String, Object> response = new LinkedHashMap<>();
+			Curso resultado = null;
+			
+			try {
+				
+				resultado =  cursoService.save(curso);
+			
+			}catch(DataIntegrityViolationException e) {
+					
+				response.put("mensaje", "Error al intentar modificar el curso en la BBDD porque probablemente ya exista");
+				response.put("error", e.getMessage().concat(":").concat(e.getMostSpecificCause().getMessage()));
+				return new ResponseEntity< Map<String, Object> >(response,HttpStatus.BAD_REQUEST );//400
+				
+			}catch(DataAccessException e) {
+				
+				response.put("mensaje", "Error al intentar crear el curso en la BBDD");
+				response.put("error", e.getMessage().concat(":").concat(e.getMostSpecificCause().getMessage()));
+				return new ResponseEntity< Map<String, Object> >(response,HttpStatus.INTERNAL_SERVER_ERROR );//500
+				
+			}
+			
+			response.put("mensaje", "Curso se ha modificado con éxito");;
+			response.put("datos", resultado);
+			return new ResponseEntity<  Map<String,  Object > >(response,HttpStatus.OK);//200
+		}
+		
+		
+		///////////////////////////////////
+		/*       ELIMINAR CURSO          */
+		///////////////////////////////////
+		
+		
+		 
+		@DeleteMapping("/curso/{id}")
+		public ResponseEntity<?> eliminar(@PathVariable Long id) {
+
+		    Map<String, Object> response = new LinkedHashMap<>();
+		    Curso estudiante = null;
+
+		    try {
+		     
+		        estudiante = cursoService.findById(id);
+
+		        if (estudiante == null) {
+		            response.put("mensaje", "No se ha encontrado ningún curso con el id: " + id);
+		            return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND); // 404
+		        }
+		        
+	            //EN ESTE CASO PROCEDEMOS A RELIZAR UN BORRADO LOGICO, EN VEZ DE ELIMNAR EL CUREO DE LA BBDD, CAMBIAMOS A INACTIVO
+		        estudiante.setActivo(0);
+		        cursoService.save(estudiante);
+
+		    } catch (DataIntegrityViolationException e) {
+
+		        response.put("mensaje", "Error al intentar eliminar el curso en la BBDD (restricciones de integridad)");
+		        response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
+		        return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST); // 400
+
+		    } catch (DataAccessException e) {
+
+		        response.put("mensaje", "Error al intentar eliminar el curso en la BBDD");
+		        response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
+		        return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR); // 500
+		    }
+
+		    response.put("mensaje", "El curso con id " + id + " se ha marcado como inactivo correctamente");
+		    response.put("datos", estudiante);
+
+		    return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK); // 200
+		
+	
+		
+		}
+		
+		
+		
+}
