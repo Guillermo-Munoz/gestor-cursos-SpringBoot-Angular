@@ -5,6 +5,7 @@ Incluye un backend en Java (Spring Boot) y un frontend en Angular.
 
 ![Vista previa del proyecto](./images/preview.png)
 
+
 🚀 TECNOLOGÍAS UTILIZADAS
 
 Frontend:
