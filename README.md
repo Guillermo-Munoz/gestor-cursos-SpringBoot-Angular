@@ -7,7 +7,6 @@ Incluye un backend en Java (Spring Boot) y un frontend en Angular.
 
 🚀 TECNOLOGÍAS UTILIZADAS
 
-
 Frontend:
 - Angular
 - Bootstrap
