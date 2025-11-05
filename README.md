@@ -1,6 +1,5 @@
 📚 PROYECTO EVALUACIÓN FINAL – GESTOR DE CURSOS
 
-
 Este proyecto consiste en una aplicación full-stack (Java + Angular) para la gestión de estudiantes y cursos.
 Incluye un backend en Java (Spring Boot) y un frontend en Angular.
 
