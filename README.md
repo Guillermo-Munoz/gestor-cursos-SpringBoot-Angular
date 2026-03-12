@@ -90,6 +90,6 @@ Frontend (UI) | 4200   | http://localhost:4200
 
 👨‍💻 AUTOR
 
-Tu Nombre Guillermo
+Guillermo
 
 💬 Si este proyecto te resulta útil, ¡no dudes en dejar una ⭐ en el repositorio!
